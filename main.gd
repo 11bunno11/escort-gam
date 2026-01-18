@@ -45,8 +45,13 @@ func _ready():
 func _on_input_line_text_submitted(text):
 	if text.strip_edges() == "":
 		return
-
+	var input_buffer = " "
+	var pending_command = " "
+	input_buffer += " " + text.strip_edges()
+	var parsed = parse_input(input_buffer)
+	
 	var result = parse_input(text)
+	
 	
 	astronaut_text.text += "\n> " + text
 	astronaut_text.text += "\n" + astronaut_response(result) + "\n"
