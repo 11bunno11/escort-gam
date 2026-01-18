@@ -38,7 +38,7 @@ const DIRECTIONS = {
 
 func _ready():
 	astronaut_text.clear()
-	astronaut_text.text = "operator online.\nawaiting commands.\n"
+	astronaut_text.text = "client online.\nawaiting commands.\n"
 	input_line.grab_focus()
 
 func _on_input_line_text_submitted(text):
@@ -71,9 +71,9 @@ func parse_input(text: String) -> Dictionary:
 		if direction == null and DIRECTIONS.has(w):
 			direction = DIRECTIONS[w]
 	
-	if "maybe" in words or "think" in words or "not sure" in text:
+	if "dont" in words or "maybe" in words or "not" in text:
 		certainty = 0.3
-	elif "pretty sure" in text or "looks like" in text:
+	elif "pretty" in text or "should" in text:
 		certainty = 0.6
 	elif "definitely" in text or "100%" in text:
 		certainty = 0.9
@@ -82,8 +82,9 @@ func parse_input(text: String) -> Dictionary:
 		"verb": verb,
 		"object": object,
 		"direction": direction,
-		"raw": text,
-		"certainty": certainty
+		"certainty": certainty,
+		"raw": text
+		
 		}
 func astronaut_response(result: Dictionary) -> String:
 	if result.verb == null:
@@ -91,12 +92,12 @@ func astronaut_response(result: Dictionary) -> String:
 	
 	var prefix = ""
 	if result.certainty < 0.4:
-		prefix = "i think"
+		prefix = "maybe?"
 	elif result.certainty < 0.7:
-		prefix = "pretty sure"
+		prefix = "got it."
 	
 	if result.verb == "MOVE" and result.direction == null:
-		return "which way?"
+		return prefix + "which way?"
 	if result.verb == "CHECK" and result.object == null:
-		return "check what?"
-	return "copy. attempting " + result.verb.to_lower() + "."
+		return prefix + "check what?"
+	return prefix + " attempting " + result.verb.to_lower() + "."
