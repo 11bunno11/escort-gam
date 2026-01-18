@@ -36,6 +36,7 @@ const DIRECTIONS = {
 	"behind": "BACK"
 }
 
+
 func _ready():
 	astronaut_text.clear()
 	astronaut_text.text = "client online.\nawaiting commands.\n"
@@ -92,12 +93,14 @@ func astronaut_response(result: Dictionary) -> String:
 	
 	var prefix = ""
 	if result.certainty < 0.4:
-		prefix = "maybe?"
-	elif result.certainty < 0.7:
+		prefix = "maybe? ok, i guess."
+	elif result.certainty < 0.8:
+		prefix = "copy."
+	elif result.certainty < 1:
 		prefix = "got it."
 	
 	if result.verb == "MOVE" and result.direction == null:
 		return prefix + "which way?"
 	if result.verb == "CHECK" and result.object == null:
 		return prefix + "check what?"
-	return prefix + " attempting " + result.verb.to_lower() + "."
+	return prefix + " attempting" + " " + result.verb.to_lower() + "."
