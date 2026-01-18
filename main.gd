@@ -42,22 +42,33 @@ func _ready():
 	astronaut_text.text = "client online.\nawaiting commands.\n"
 	input_line.grab_focus()
 
+var input_buffer = " "
+var pending_command = " "
+
 func _on_input_line_text_submitted(text):
 	if text.strip_edges() == "":
 		return
-	var input_buffer = " "
-	var pending_command = " "
+
 	input_buffer += " " + text.strip_edges()
 	var parsed = parse_input(input_buffer)
 	
-	var result = parse_input(text)
+	if pending_command.has ("verb") == false and parsed.verb !=null:
+		pending_command.verb =parsed.verb
+	if pending_command.has ("object") == false and parsed.object !=null:
+		pending_command.object =parsed.object
+	if pending_command.has ("direction") == false and parsed.direction !=null:
+		pending_command.direction = parsed.direction
+		
+	pending_command.certainty = parsed.certainty
 	
-	
-	astronaut_text.text += "\n> " + text
-	astronaut_text.text += "\n" + astronaut_response(result) + "\n"
-
-	debug_label.text = str(result)
+	astronaut_text.append_text("\n>" + text)
+	astronaut_text.append_text("\n" + astronaut_response(pending_command) + "\n")
+	debug_label.text = str(pending_command)
 	input_line.clear()
+
+	if pending_command.verb !=null and (pending_command.object !=null or pending_command.direction !=null):
+		input_buffer = ""
+		pending_command = {}
 
 func parse_input(text: String) -> Dictionary:
 	var clean = text.to_lower().replace("?", " ").replace("!", "").replace(",","")
