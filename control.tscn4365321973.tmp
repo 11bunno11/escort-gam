@@ -1,0 +1,31 @@
+[gd_scene load_steps=2 format=3 uid="uid://duryk14homy1s"]
+
+[ext_resource type="Script" uid="uid://djkimjcpy0il5" path="res://main.gd" id="1_0fbet"]
+
+[node name="Control" type="Control"]
+layout_mode = 3
+anchors_preset = 0
+offset_left = 252.0
+offset_top = 97.0
+offset_right = 878.0
+offset_bottom = 553.0
+script = ExtResource("1_0fbet")
+
+[node name="Margin" type="MarginContainer" parent="."]
+layout_mode = 0
+offset_left = 170.0
+offset_top = 151.0
+offset_right = 487.0
+offset_bottom = 213.0
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Margin"]
+layout_mode = 2
+
+[node name="astro_text" type="RichTextLabel" parent="Margin/VBoxContainer"]
+layout_mode = 2
+
+[node name="ur_input" type="LineEdit" parent="Margin/VBoxContainer"]
+layout_mode = 2
+
+[node name="debug_label" type="Label" parent="Margin/VBoxContainer"]
+layout_mode = 2
