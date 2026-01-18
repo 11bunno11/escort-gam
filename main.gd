@@ -52,7 +52,8 @@ func _on_input_line_text_submitted(text):
 	input_buffer += " " + text.strip_edges()
 	var parsed = parse_input(input_buffer)
 	
-	print(typeof(pending_command))
+	
+	
 	
 	if not pending_command.has("verb") and parsed["verb"] != null:
 		pending_command["verb"] = parsed["verb"]
@@ -60,17 +61,47 @@ func _on_input_line_text_submitted(text):
 		pending_command["object"] = parsed["object"]
 	if not pending_command.has("direction") and parsed["direction"] !=null:
 		pending_command["direction"] = parsed["direction"]
+	
+	if pending_command.has("verb") and not yo_bro_this_usable(pending_command) and not is_incomplete(pending_command):
+
+		astronaut_text.append_text("\n whar??\n")
+		input_buffer = " "
+		pending_command ={}
+		input_line.clear()
+		return
 		
 	pending_command["certainty"] = parsed["certainty"]
 	
 	astronaut_text.append_text("\n>" + text)
-	astronaut_text.append_text("\n" + astronaut_response(pending_command) + "\n")
+	astronaut_text.append_text("\n" + dude_response(pending_command) + "\n")
 	debug_label.text = str(pending_command)
 	input_line.clear()
 
-	if pending_command.has("verb") and (pending_command.has("object") or pending_command.has("direction")):
+	if yo_bro_this_usable(pending_command) and pending_command.has("verb"):
 		input_buffer = ""
 		pending_command = {}
+#chatgpt help me >.<
+func is_incomplete(cmd: Dictionary) -> bool:
+	if not cmd.has("verb"):
+		return true
+	match cmd["verb"]:
+		"MOVE":
+			return not cmd.has("direction")
+		"CHECK", "OPEN":
+			return not cmd.has("object")
+	return false
+func yo_bro_this_usable(cmd: Dictionary) -> bool:
+	if not cmd.has("verb") or cmd["verb"] == null:
+		return true
+	match cmd["verb"]:
+		"MOVE":
+			return cmd.has("direction")
+		"CHECK", "OPEN":
+			return cmd.has("object")
+		"WAIT", "HIDE", "FOLLOW":
+			return true
+	return true
+#thx chatgpt ^w^
 
 func parse_input(text: String) -> Dictionary:
 	var clean = text.to_lower().replace("?", " ").replace("!", "").replace(",","")
@@ -105,7 +136,7 @@ func parse_input(text: String) -> Dictionary:
 		"raw": text
 		
 		}
-func astronaut_response(result: Dictionary) -> String:
+func dude_response(result: Dictionary) -> String:
 	if not result.has("verb") or result["verb"] == null:
 		return "what do you want me to do?"
 	
