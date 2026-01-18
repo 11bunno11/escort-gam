@@ -42,8 +42,8 @@ func _ready():
 	astronaut_text.text = "client online.\nawaiting commands.\n"
 	input_line.grab_focus()
 
-var input_buffer = " "
-var pending_command = " "
+var input_buffer := ""
+var pending_command := {}
 
 func _on_input_line_text_submitted(text):
 	if text.strip_edges() == "":
@@ -52,12 +52,14 @@ func _on_input_line_text_submitted(text):
 	input_buffer += " " + text.strip_edges()
 	var parsed = parse_input(input_buffer)
 	
-	if pending_command.has ("verb") == false and parsed.verb !=null:
-		pending_command.verb =parsed.verb
-	if pending_command.has ("object") == false and parsed.object !=null:
-		pending_command.object =parsed.object
-	if pending_command.has ("direction") == false and parsed.direction !=null:
-		pending_command.direction = parsed.direction
+	print(typeof(pending_command))
+	
+	if pending_command.has("verb") == false and parsed["verb"] != null:
+		pending_command.verb = parsed["verb"]
+	if pending_command.has("object") == false and parsed["object"] !=null:
+		pending_command.object = parsed["object"]
+	if pending_command.has("direction") == false and parsed["direction"] !=null:
+		pending_command.direction = parsed["direction"]
 		
 	pending_command.certainty = parsed.certainty
 	
