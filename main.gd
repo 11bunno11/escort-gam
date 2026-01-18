@@ -54,21 +54,21 @@ func _on_input_line_text_submitted(text):
 	
 	print(typeof(pending_command))
 	
-	if pending_command.has("verb") == false and parsed["verb"] != null:
-		pending_command.verb = parsed["verb"]
-	if pending_command.has("object") == false and parsed["object"] !=null:
-		pending_command.object = parsed["object"]
-	if pending_command.has("direction") == false and parsed["direction"] !=null:
-		pending_command.direction = parsed["direction"]
+	if not pending_command.has("verb") and parsed["verb"] != null:
+		pending_command["verb"] = parsed["verb"]
+	if not pending_command.has("object") and parsed["object"] !=null:
+		pending_command["object"] = parsed["object"]
+	if not pending_command.has("direction") and parsed["direction"] !=null:
+		pending_command["direction"] = parsed["direction"]
 		
-	pending_command.certainty = parsed.certainty
+	pending_command["certainty"] = parsed["certainty"]
 	
 	astronaut_text.append_text("\n>" + text)
 	astronaut_text.append_text("\n" + astronaut_response(pending_command) + "\n")
 	debug_label.text = str(pending_command)
 	input_line.clear()
 
-	if pending_command.verb !=null and (pending_command.object !=null or pending_command.direction !=null):
+	if pending_command.has("verb") and (pending_command.has("object") or pending_command.has("direction")):
 		input_buffer = ""
 		pending_command = {}
 
@@ -106,7 +106,7 @@ func parse_input(text: String) -> Dictionary:
 		
 		}
 func astronaut_response(result: Dictionary) -> String:
-	if result.verb == null:
+	if not result.has("verb") or result["verb"] == null:
 		return "what do you want me to do?"
 	
 	var prefix = ""
@@ -117,8 +117,8 @@ func astronaut_response(result: Dictionary) -> String:
 	elif result.certainty < 1:
 		prefix = "got it."
 	
-	if result.verb == "MOVE" and result.direction == null:
+	if result["verb"] == "MOVE" and not result.has("direction"):
 		return prefix + "which way?"
-	if result.verb == "CHECK" and result.object == null:
+	if result["verb"] == "CHECK" and not result.has("object"):
 		return prefix + "check what?"
-	return prefix + " attempting" + " " + result.verb.to_lower() + "."
+	return prefix + " attempting" + " " + result["verb"].to_lower() + "."
